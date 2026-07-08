@@ -21,11 +21,11 @@ function App() {
     <>
       <div className="flex flex-col items-center justify-center h-screen gap-4">
         <h1>Counter With Redux</h1>
-        <Button className="cursor-pointer" onClick={() => handleIncrement(1)}>Increment</Button>
+        <Button className="cursor-pointer bg-amber-500 text-white" onClick={() => handleIncrement(1)}>Increment</Button>
         <h1>Counter: {count}</h1>
-        <Button className="cursor-pointer" onClick={() => handleDecrement(1)}>Decrement</Button>
+        <Button className="cursor-pointer bg-amber-500 text-white" onClick={() => handleDecrement(1)}>Decrement</Button>
       </div>
-      <Button>Click</Button>
+      <Button className="cursor-pointer bg-amber-500 text-white">Click</Button>
     </>
   )
 }
