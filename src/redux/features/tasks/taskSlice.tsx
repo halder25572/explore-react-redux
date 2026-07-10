@@ -17,6 +17,14 @@ const initialState: InitialState = {
             dueDate: "2027-01-01",
             isCompleted: false,
             priority: "high",
+        },
+        {
+            id: '2',
+            title: "Git Task 2",
+            description: "This is task 2",
+            dueDate: "2027-01-01",
+            isCompleted: false,
+            priority: "medium",
         }
     ],
     filter: "all",
