@@ -1,11 +1,19 @@
 import type { RootState } from "@/redux/store";
 import type { ITask } from "@/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit";
 
 
 interface InitialState {
     tasks: ITask[];
     filter: "all" | "High" | "Medium" | "Low";
+};
+
+type DraftTask = Pick<ITask, "title" | "description" | "dueDate" | "priority">;
+
+const createTask = (task: DraftTask): ITask => {
+    return {
+        id: nanoid(), isCompleted: false, ...task
+    };
 };
 
 const initialState: InitialState = {
@@ -34,8 +42,15 @@ const initialState: InitialState = {
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
-    reducers: {}
+    reducers: {
+        addTask: (state, action: PayloadAction<DraftTask>) => {
+            const taskData  = (action.payload);
+            state.tasks.unshift(createTask(taskData));
+        }
+    }
 });
+
+export const { addTask } = taskSlice.actions;
 
 // Selector to get tasks from the state
 export const selectTasks = (state: RootState) => {
