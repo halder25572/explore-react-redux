@@ -38,7 +38,7 @@ const initialState: InitialState = {
     filter: "all",
 }
 
-// Create a slice for tasks using createSlice from Redux Toolkit.
+// Create a slice for tasks using createSlice from Redux Toolkit
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
@@ -46,11 +46,21 @@ const taskSlice = createSlice({
         addTask: (state, action: PayloadAction<DraftTask>) => {
             const taskData  = (action.payload);
             state.tasks.unshift(createTask(taskData));
+        },
+        toggleCompleteState: (state, action: PayloadAction<string>) => {
+            state.tasks.forEach((task) => {
+                if (task.id === action.payload) {
+                    task.isCompleted = !task.isCompleted;
+                }
+            });
+        },
+        deleteTask: (state, action: PayloadAction<string>) => {
+            state.tasks = state.tasks.filter((task) => task.id !== action.payload);
         }
     }
 });
 
-export const { addTask } = taskSlice.actions;
+export const { addTask, toggleCompleteState, deleteTask } = taskSlice.actions;
 
 // Selector to get tasks from the state
 export const selectTasks = (state: RootState) => {

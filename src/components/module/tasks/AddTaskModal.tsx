@@ -1,5 +1,4 @@
 import { useState } from "react"
-
 import { addTask } from "@/redux/features/tasks/taskSlice"
 import { useAppDispatch } from "@/redux/hook"
 import { Button } from "@/components/ui/button"
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
+
 type TaskFormState = {
     title: string
     description: string
@@ -42,7 +42,7 @@ const AddTaskModal = () => {
     const dispatch = useAppDispatch()
     const [open, setOpen] = useState(false)
     const [formState, setFormState] = useState(initialFormState)
-    const [errorMessage, setErrorMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
