@@ -44,7 +44,7 @@ const taskSlice = createSlice({
     initialState,
     reducers: {
         addTask: (state, action: PayloadAction<DraftTask>) => {
-            const taskData  = (action.payload);
+            const taskData = (action.payload);
             state.tasks.unshift(createTask(taskData));
         },
         toggleCompleteState: (state, action: PayloadAction<string>) => {
@@ -56,14 +56,27 @@ const taskSlice = createSlice({
         },
         deleteTask: (state, action: PayloadAction<string>) => {
             state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+        },
+        updateFilter: (state, action: PayloadAction<"all" | "High" | "Medium" | "Low">) => {
+            state.filter = action.payload;
         }
     }
 });
 
-export const { addTask, toggleCompleteState, deleteTask } = taskSlice.actions;
+export const { addTask, toggleCompleteState, deleteTask, updateFilter } = taskSlice.actions;
 
 // Selector to get tasks from the state
 export const selectTasks = (state: RootState) => {
+    const filter = state.todo.filter;
+    if (filter === "Low") {
+        return state.todo.tasks.filter((task) => task.priority === "low");
+    }
+    if (filter === "Medium") {
+        return state.todo.tasks.filter((task) => task.priority === "medium");
+    }
+    if (filter === "High") {
+        return state.todo.tasks.filter((task) => task.priority === "high");
+    }
     return state.todo.tasks;
 }
 
