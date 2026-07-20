@@ -1,30 +1,36 @@
 import AddTaskModal from "@/components/module/tasks/AddTaskModal";
 import TaskCard from "@/components/module/tasks/TaskCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { selectTasks, updateFilter } from "@/redux/features/tasks/taskSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useGetTasksQuery } from "@/redux/api/baseApi";
+import type { ITask } from "@/types";
+
 
 
 const Tasks = () => {
-    const tasks = useAppSelector(selectTasks);
-    const dispatch = useAppDispatch();
-    
+    const { data, isLoading, isError } = useGetTasksQuery(undefined);
+
+    console.log(data, isLoading, isError);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="mx-auto max-w-7xl px-5 mt-20">
             <div className="flex justify-end items-center gap-4">
                 <h1 className="mr-auto">Tasks</h1>
                 <Tabs defaultValue="all">
                     <TabsList>
-                        <TabsTrigger onClick={() => dispatch(updateFilter("all"))} value="all">
+                        <TabsTrigger value="all">
                             All
                         </TabsTrigger>
-                        <TabsTrigger onClick={() => dispatch(updateFilter("Medium"))} value="medium">
+                        <TabsTrigger value="medium">
                             Medium
                         </TabsTrigger>
-                        <TabsTrigger onClick={() => dispatch(updateFilter("Low"))} value="low">
+                        <TabsTrigger value="low">
                             Low
                         </TabsTrigger>
-                        <TabsTrigger onClick={() => dispatch(updateFilter("High"))} value="high">
+                        <TabsTrigger value="high">
                             High
                         </TabsTrigger>
                     </TabsList>
@@ -32,8 +38,13 @@ const Tasks = () => {
                 <AddTaskModal />
             </div>
             <div className="space-y-5 mt-5">
+                {/* {
+                    data?.map((task: ITask) => (
+                        <TaskCard key={task.id} task={task} />
+                    ))
+                } */}
                 {
-                    tasks.map((task) => (
+                    data?.tasks?.map((task: ITask) => (
                         <TaskCard key={task.id} task={task} />
                     ))
                 }
