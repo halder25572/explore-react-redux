@@ -38,11 +38,6 @@ const Tasks = () => {
                 <AddTaskModal />
             </div>
             <div className="space-y-5 mt-5">
-                {/* {
-                    data?.map((task: ITask) => (
-                        <TaskCard key={task.id} task={task} />
-                    ))
-                } */}
                 {
                     data?.tasks?.map((task: ITask) => (
                         <TaskCard key={task.id} task={task} />

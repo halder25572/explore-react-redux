@@ -8,7 +8,7 @@ export const baseApi = createApi({
         getTasks: builder.query({
             query: () => '/tasks',
         }),
-    })
+    }),
 });
 
 export const { useGetTasksQuery } = baseApi;
