@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { addTask } from "@/redux/features/tasks/taskSlice"
-import { useAppDispatch } from "@/redux/hook"
+import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -22,6 +21,9 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useCreateTaskMutation } from "@/redux/api/baseApi"
+
+
 
 
 type TaskFormState = {
@@ -39,50 +41,33 @@ const initialFormState: TaskFormState = {
 }
 
 const AddTaskModal = () => {
-    const dispatch = useAppDispatch()
     const [open, setOpen] = useState(false)
-    const [formState, setFormState] = useState(initialFormState)
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("")
+    const form = useForm<TaskFormState>({
+        defaultValues: initialFormState,
+    });
 
-    const handleChange = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const { name, value } = event.target
+    const [createTask, { data, isLoading, isError }] = useCreateTaskMutation();
+    console.log(data, isLoading, isError);
 
-        setFormState((currentState) => ({
-            ...currentState,
-            [name]: value,
-        }))
-    }
+    const { register, handleSubmit, reset } = form
 
-    const handlePriorityChange = (value: "low" | "medium" | "high") => {
-        setFormState((currentState) => ({
-            ...currentState,
-            priority: value,
-        }))
-    }
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-
-        if (!formState.title.trim() || !formState.dueDate) {
+    const onSubmit = (data: TaskFormState) => {
+        if (!data.title.trim() || !data.dueDate) {
             setErrorMessage("Title and due date are required.")
             return
         }
 
         setErrorMessage("")
+        const taskData = {
+            ...data,
+            isCompleted: false,
+        };
+        createTask(taskData)
 
-        dispatch(
-            addTask({
-                title: formState.title.trim(),
-                description: formState.description.trim(),
-                dueDate: formState.dueDate,
-                priority: formState.priority,
-            })
-        )
-
-        setFormState(initialFormState)
+        console.log(taskData)
         setOpen(false)
+        reset(initialFormState)
     }
 
     return (
@@ -107,16 +92,14 @@ const AddTaskModal = () => {
                     </div>
                 ) : null}
 
-                <form className="grid gap-4" onSubmit={handleSubmit}>
+                <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid gap-2">
                         <Label htmlFor="title">Title</Label>
                         <Input
                             id="title"
-                            name="title"
-                            value={formState.title}
-                            onChange={handleChange}
                             placeholder="Write a task title"
                             required
+                            {...register("title")}
                         />
                     </div>
 
@@ -124,10 +107,8 @@ const AddTaskModal = () => {
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
-                            name="description"
-                            value={formState.description}
-                            onChange={handleChange}
                             placeholder="Add a short description"
+                            {...register("description")}
                         />
                     </div>
 
@@ -135,17 +116,15 @@ const AddTaskModal = () => {
                         <Label htmlFor="dueDate">Due Date</Label>
                         <Input
                             id="dueDate"
-                            name="dueDate"
                             type="date"
-                            value={formState.dueDate}
-                            onChange={handleChange}
                             required
+                            {...register("dueDate")}
                         />
                     </div>
 
                     <div className="grid gap-2">
                         <Label>Priority</Label>
-                        <Select value={formState.priority} onValueChange={handlePriorityChange}>
+                        <Select {...register("priority")}>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select priority" />
                             </SelectTrigger>
@@ -157,14 +136,14 @@ const AddTaskModal = () => {
                         </Select>
                     </div>
 
-                <DialogFooter>
-                    <DialogClose asChild>
+                    <DialogFooter>
+                        <DialogClose asChild>
                             <Button type="button" variant="outline">
                                 Cancel
                             </Button>
-                    </DialogClose>
-                    <Button type="submit">Add Task</Button>
-                </DialogFooter>
+                        </DialogClose>
+                        <Button type="submit">Add Task</Button>
+                    </DialogFooter>
                 </form>
             </DialogContent>
         </Dialog>
